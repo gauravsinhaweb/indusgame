@@ -48,8 +48,6 @@ export const handleRefreshToken = async (e, cookies, setCookie) => {
     });
 
     const data = await response.json();
-    console.log("Access Token:", data.accessToken);
-    console.log("called at", new Date().toLocaleTimeString());
     handleSetCookie(data, setCookie, "auths");
   } catch (error) {
     console.error("Error while renewing access token:", error.message);
