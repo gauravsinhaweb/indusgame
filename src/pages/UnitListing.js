@@ -3,6 +3,7 @@ import { Table } from "react-bootstrap";
 import useCookies from "react-cookie/cjs/useCookies";
 import { handleGetUnits } from "../api";
 import { getSortingIcon } from "../utils";
+import UnitRow from "../components/listing/UnitRow";
 
 const UnitListing = () => {
   const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
@@ -17,7 +18,6 @@ const UnitListing = () => {
     };
     getUnits();
   }, []);
-
   const handleSort = (columnName) => {
     if (sortColumn === columnName) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -27,7 +27,7 @@ const UnitListing = () => {
     }
   };
 
-  const sortedUnits = units.slice().sort((a, b) => {
+  const sortedUnits = units?.slice().sort((a, b) => {
     if (sortColumn === "unitId") {
       return sortDirection === "asc"
         ? a.id.localeCompare(b.id)
@@ -78,24 +78,7 @@ const UnitListing = () => {
         </tr>
       </thead>
       <tbody>
-        {sortedUnits.map((unit) => (
-          <tr key={unit.id}>
-            <td>
-              <img
-                src={unit.imageUrl}
-                alt={unit.id}
-                style={{ maxWidth: "50px", maxHeight: "50px" }}
-              />
-            </td>
-            <td>{unit.id}</td>
-            <td>{unit.quality}</td>
-            <td>{unit.health.toLocaleString()}</td>
-            <td>{unit.attack.toLocaleString()}</td>
-            <td>{unit.maxTargetCount}</td>
-            <td>{unit.spawnCost.toLocaleString()}</td>
-            <td>{unit.spawnCooldownInSeconds}</td>
-          </tr>
-        ))}
+        {sortedUnits && sortedUnits.map((unit) => <UnitRow unit={unit} />)}
       </tbody>
     </Table>
   );
