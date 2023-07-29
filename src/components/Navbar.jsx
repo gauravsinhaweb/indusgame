@@ -26,10 +26,11 @@ const Navbar = () => {
       >
         <ul className="navbar-nav">
           <li
+            onClick={() => navigate("/units")}
             className="nav-item nav-link cursor-pointer"
             style={{ cursor: "pointer" }}
           >
-            Login
+            Units
           </li>
           <li
             onClick={() => handleLogout(cookies, removeCookie, navigate)}

@@ -3,4 +3,5 @@ export const API = {
   LOGIN: "logins",
   LOGOUT: "logouts",
   REFRESH: "auths",
+  UNITS: "units",
 };

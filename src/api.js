@@ -74,3 +74,19 @@ export const handleLogout = async (cookies, removeCookie, navigate) => {
     console.error("Error while logging out:", error.message);
   }
 };
+export const handleGetUnits = async (cookies) => {
+  try {
+    const url = API.BASE + API.UNITS;
+    const headers = {
+      Authorization: `Bearer ${cookies?.access_token}`,
+    };
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};

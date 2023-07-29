@@ -1,3 +1,5 @@
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+
 export const handleValidation = (
   username,
   password,
@@ -30,11 +32,11 @@ export const handleValidation = (
 
 export const handleSetCookie = (response, setCookie, apiName, removeCookie) => {
   try {
-    if (apiName == "logouts") {
+    if (apiName === "logouts") {
       removeCookie("access_token");
       removeCookie("refresh_token");
       localStorage.removeItem("tokenExpire");
-    } else if (apiName == "auths") {
+    } else if (apiName === "auths") {
       const expiresInSeconds = response?.expiresInSeconds;
       setCookie("access_token", response?.accessToken, {
         path: "/",
@@ -60,4 +62,10 @@ export const handleSetCookie = (response, setCookie, apiName, removeCookie) => {
   } catch (error) {
     console.log("Failed to set cookie", error);
   }
+};
+export const getSortingIcon = (columnName, sortColumn, sortDirection) => {
+  if (sortColumn === columnName) {
+    return sortDirection === "asc" ? <FaSortUp /> : <FaSortDown />;
+  }
+  return <FaSort />;
 };
