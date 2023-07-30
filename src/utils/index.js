@@ -1,5 +1,5 @@
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
-import { handleSaveUnit } from "../api";
+import { handleDeleteUnit, handleSaveUnit } from "../api";
 import { toast } from "react-toastify";
 
 export const handleValidation = (
@@ -167,6 +167,22 @@ export const handleAction = (
       setUnit(res);
       toast.success("Updated!");
       setIsEditing(false);
+    });
+  } else if (type === "delete") {
+    const data = {
+      id: unitId,
+      quality,
+      health,
+      attack,
+      maxTargetCount,
+      spawnCost,
+      spawnCooldown,
+    };
+    const res = handleDeleteUnit(cookies, unitId, data);
+    res.then((res) => {
+      if (res.status === 204) {
+        toast.success("Deleted!");
+      }
     });
   }
 };

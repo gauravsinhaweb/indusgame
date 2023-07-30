@@ -241,12 +241,27 @@ const UnitRow = (props) => {
                 </Button>
                 <Button
                   variant="danger"
-                  // onClick={() => handleDelete(unit.id)}
+                  onClick={(e) =>
+                    handleAction(
+                      e,
+                      cookies,
+                      unit.id,
+                      "delete",
+                      null,
+                      quality,
+                      health,
+                      attack,
+                      maxTargetCount,
+                      spawnCost,
+                      spawnCooldown,
+                      setunit
+                    )
+                  }
                 >
                   Delete
                 </Button>{" "}
                 {isEditing && (
-                  <Button variant="dark" onClick={(e) => setIsEditing(false)}>
+                  <Button variant="dark" onClick={() => setIsEditing(false)}>
                     Cancel
                   </Button>
                 )}

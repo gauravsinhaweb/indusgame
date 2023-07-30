@@ -112,3 +112,20 @@ export const handleSaveUnit = async (cookies, id, body) => {
     console.log(error);
   }
 };
+export const handleDeleteUnit = async (cookies, id, body) => {
+  try {
+    const url = API.BASE + API.UNITS + "/" + id + "?excludeResult=true";
+    const headers = {
+      Authorization: `Bearer ${cookies?.access_token}`,
+      "Content-Type": "application/json",
+    };
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers,
+      body: JSON.stringify(body),
+    });
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
