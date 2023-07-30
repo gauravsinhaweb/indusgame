@@ -1,4 +1,4 @@
-import { ToastContainer, toast } from "react-toastify";
+import { Flip, ToastContainer, toast } from "react-toastify";
 import "./App.css";
 import Navbar from "./components/Navbar";
 import RoutePage from "./components/routes/RoutePage";
@@ -35,7 +35,12 @@ function App() {
     <div className="main">
       <Navbar />
       <RoutePage />
-      <ToastContainer />
+      <ToastContainer
+        theme="dark"
+        autoClose={2000}
+        transition={Flip}
+        pauseOnHover={false}
+      />
     </div>
   );
 }

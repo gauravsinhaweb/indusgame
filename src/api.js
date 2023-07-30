@@ -22,7 +22,7 @@ export const handleLogin = async (username, password, setCookie) => {
 
     const loginResponseData = loginResponse.data;
     if (loginResponseData?.auth?.accessToken.length > 0) {
-      handleSetCookie(loginResponseData, setCookie);
+      handleSetCookie(loginResponseData, setCookie, "login", null);
       toast.success("Login Success!");
     }
 
@@ -46,9 +46,9 @@ export const handleRefreshToken = async (e, cookies, setCookie) => {
       headers,
       body: JSON.stringify(body),
     });
-
     const data = await response.json();
-    handleSetCookie(data, setCookie, "auths");
+    toast("Token Refreshed!");
+    handleSetCookie(data, setCookie, "auths", null);
   } catch (error) {
     console.error("Error while renewing access token:", error.message);
   }
@@ -65,7 +65,7 @@ export const handleLogout = async (cookies, removeCookie, navigate) => {
     });
     if (response.status === 202) toast.success("Logout Success!");
     if (response.status === 401) {
-      toast.error("you need to log in");
+      toast.info("You need to Login");
     }
     navigate("/login");
     handleSetCookie(null, null, "logouts", removeCookie);
@@ -74,7 +74,7 @@ export const handleLogout = async (cookies, removeCookie, navigate) => {
     console.error("Error while logging out:", error.message);
   }
 };
-export const handleGetUnits = async (cookies) => {
+export const handleGetUnits = async (cookies, navigate) => {
   try {
     const url = API.BASE + API.UNITS;
     const headers = {
@@ -83,6 +83,28 @@ export const handleGetUnits = async (cookies) => {
     const response = await fetch(url, {
       method: "GET",
       headers,
+    });
+    if (response.status === 401) {
+      toast.error("Token expired!");
+      navigate("/");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+export const handleSaveUnit = async (cookies, id, body) => {
+  try {
+    const url = API.BASE + API.UNITS + "/" + id;
+    const headers = {
+      Authorization: `Bearer ${cookies?.access_token}`,
+      "Content-Type": "application/json",
+    };
+    const response = await fetch(url, {
+      method: "PATCH",
+      headers,
+      body: JSON.stringify(body),
     });
     const data = await response.json();
     return data;

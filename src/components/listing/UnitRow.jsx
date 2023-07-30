@@ -1,14 +1,28 @@
-import React from "react";
-import { useState } from "react";
-import { Button, ButtonGroup, Card, Table } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import { Button, ButtonGroup, Card } from "react-bootstrap";
+import Form from "react-bootstrap/Form";
+import { handleAction, handleEpandRow } from "../../utils";
+
 const UnitRow = (props) => {
-  const { unit } = props;
+  const { _unit, cookies, getUnits } = props;
   const [expandedRows, setExpandedRows] = useState([]);
-  const [expandState, setExpandState] = useState({});
+  const [unit, setunit] = useState(_unit);
+  const [quality, setQuality] = useState(unit?.quality);
+  const [health, setHealth] = useState(unit?.health);
+  const [attack, setAttack] = useState(unit?.attack);
+  const [maxTargetCount, setMaxTargetCount] = useState(unit?.maxTargetCount);
+  const [spawnCost, setSpawnCost] = useState(unit?.spawnCost);
+  const [isEditing, setIsEditing] = useState(false);
+  const [spawnCooldown, setSpawnCooldown] = useState(
+    unit?.spawnCooldownInSeconds
+  );
+  useEffect(() => {
+    setunit(_unit);
+  }, [_unit]);
 
   const cardData = [
     {
-      title: "Atttack Type",
+      title: "Attack Type",
       value: unit?.attackType,
     },
     {
@@ -28,25 +42,60 @@ const UnitRow = (props) => {
       value: unit?.faction,
     },
   ];
-  const handleEpandRow = (event, unitId) => {
-    const currentExpandedRows = expandedRows;
-    const isRowExpanded = currentExpandedRows.includes(unitId);
-    let obj = {};
-    isRowExpanded ? (obj[unitId] = false) : (obj[unitId] = true);
-    setExpandState(obj);
-    const newExpandedRows = isRowExpanded
-      ? currentExpandedRows.filter((id) => id !== unitId)
-      : currentExpandedRows.concat(unitId);
-
-    setExpandedRows(newExpandedRows);
-  };
-  const handleAction = (unitId, type) => {
-    console.log("edit", unitId);
-  };
+  const formInputData = [
+    {
+      id: "health",
+      title: "Health",
+      type: "number",
+      min: "5",
+      max: "10000",
+      step: "5",
+      value: health,
+      onChange: (e) => setHealth(Number(e.target.value)),
+    },
+    {
+      id: "attack",
+      title: "Attack",
+      type: "number",
+      min: "5",
+      max: "500",
+      step: "5",
+      value: attack,
+      onChange: (e) => setAttack(Number(e.target.value)),
+    },
+    {
+      id: "maxTargetCount",
+      title: "Max Target Count",
+      type: "number",
+      min: "1",
+      max: "100",
+      value: maxTargetCount,
+      onChange: (e) => setMaxTargetCount(Number(e.target.value)),
+    },
+    {
+      id: "spawnCost",
+      title: "Spawn Cost",
+      type: "number",
+      min: "0",
+      max: "100",
+      step: "5",
+      value: spawnCost,
+      onChange: (e) => setSpawnCost(Number(e.target.value)),
+    },
+    {
+      id: "spawnCooldownInSeconds",
+      title: "Spawn Cooldown",
+      type: "number",
+      value: spawnCooldown,
+      onChange: (e) => setSpawnCooldown(Number(e.target.value)),
+    },
+  ];
   return (
     <>
       <tr
-        onClick={(event) => handleEpandRow(event, unit.id)}
+        onClick={(event) =>
+          handleEpandRow(event, unit.id, expandedRows, setExpandedRows)
+        }
         key={unit.id}
         className={`${
           expandedRows.includes(unit.id) && "bg-dark text-white"
@@ -61,12 +110,52 @@ const UnitRow = (props) => {
           />
         </td>
         <td>{unit.id}</td>
-        <td>{unit.quality}</td>
-        <td>{unit.health.toLocaleString()}</td>
-        <td>{unit.attack.toLocaleString()}</td>
-        <td>{unit.maxTargetCount}</td>
-        <td>{unit.spawnCost.toLocaleString()}</td>
-        <td>{unit.spawnCooldownInSeconds}</td>
+
+        <td>
+          {" "}
+          {isEditing ? (
+            <Form.Group
+              onClick={(e) => e.stopPropagation()}
+              controlId="quality"
+            >
+              <Form.Control
+                as="select"
+                value={quality}
+                onChange={(e) => setQuality(e.target.value)}
+              >
+                <option value="Common">Common</option>
+                <option value="Rare">Rare</option>
+                <option value="Epic">Epic</option>
+              </Form.Control>
+            </Form.Group>
+          ) : (
+            unit.quality
+          )}
+        </td>
+
+        {formInputData &&
+          formInputData.map((data) => (
+            <td>
+              {isEditing ? (
+                <Form.Group
+                  onClick={(e) => e.stopPropagation()}
+                  controlId={data.title}
+                >
+                  <Form.Control
+                    type={data.type}
+                    min={data.min}
+                    max={data.max}
+                    step={data.step}
+                    placeholder={data.title}
+                    value={data.value}
+                    onChange={data.onChange}
+                  />
+                </Form.Group>
+              ) : (
+                unit[data.id]
+              )}
+            </td>
+          ))}
       </tr>
       {expandedRows.includes(unit.id) && (
         <tr>
@@ -103,15 +192,39 @@ const UnitRow = (props) => {
             <div className="d-flex justify-content-end">
               <ButtonGroup>
                 {" "}
-                <Button variant="success" onClick={() => handleAction(unit.id)}>
-                  Edit
+                <Button
+                  variant="success"
+                  onClick={(e) => {
+                    handleAction(
+                      e,
+                      cookies,
+                      unit.id,
+                      isEditing ? "save" : "edit",
+                      setIsEditing,
+                      quality,
+                      health,
+                      attack,
+                      maxTargetCount,
+                      spawnCost,
+                      spawnCooldown,
+                      setunit
+                    );
+                    getUnits();
+                  }}
+                >
+                  {isEditing ? "Save" : "Edit"}
                 </Button>
                 <Button
                   variant="danger"
                   // onClick={() => handleDelete(unit.id)}
                 >
                   Delete
-                </Button>
+                </Button>{" "}
+                {isEditing && (
+                  <Button variant="dark" onClick={(e) => setIsEditing(false)}>
+                    Cancel
+                  </Button>
+                )}
               </ButtonGroup>
             </div>
           </td>

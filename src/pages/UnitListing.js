@@ -2,22 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import useCookies from "react-cookie/cjs/useCookies";
 import { handleGetUnits } from "../api";
-import { getSortingIcon } from "../utils";
 import UnitRow from "../components/listing/UnitRow";
+import { getSortingIcon } from "../utils";
+import { useNavigate } from "react-router-dom";
 
 const UnitListing = () => {
+  const navigate = useNavigate();
   const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
   const [units, setunits] = useState([]);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
-
+  const getUnits = async () => {
+    const res = await handleGetUnits(cookies, navigate);
+    setunits(res);
+  };
   useEffect(() => {
-    const getUnits = async () => {
-      const res = await handleGetUnits(cookies);
-      setunits(res);
-    };
     getUnits();
   }, []);
+
   const handleSort = (columnName) => {
     if (sortColumn === columnName) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -46,7 +48,6 @@ const UnitListing = () => {
         : b[sortColumn] - a[sortColumn];
     }
   });
-
   return (
     <Table striped bordered hover responsive>
       <thead>
@@ -78,7 +79,10 @@ const UnitListing = () => {
         </tr>
       </thead>
       <tbody>
-        {sortedUnits && sortedUnits.map((unit) => <UnitRow unit={unit} />)}
+        {sortedUnits &&
+          sortedUnits.map((unit) => (
+            <UnitRow _unit={unit} cookies={cookies} getUnits={getUnits} />
+          ))}
       </tbody>
     </Table>
   );
