@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Button, ButtonGroup, Card } from "react-bootstrap";
 import Form from "react-bootstrap/Form";
+import {
+  GiArrowsShield,
+  GiBrassKnuckles,
+  GiFencer,
+  GiPickOfDestiny,
+  GiThunderball,
+} from "react-icons/gi";
 import { handleAction, handleEpandRow } from "../../utils";
 
 const UnitRow = (props) => {
@@ -24,22 +31,32 @@ const UnitRow = (props) => {
     {
       title: "Attack Type",
       value: unit?.attackType,
+      icon: <GiArrowsShield size={36} />,
+      color: "#fde047",
     },
     {
       title: " Moment Speed",
       value: unit?.movementSpeedType,
+      icon: <GiThunderball size={36} />,
+      color: "#67e8f9",
     },
     {
       title: "Ability",
       value: unit?.ability?.name,
+      icon: <GiFencer size={36} />,
+      color: "#cbd5e1",
     },
     {
       title: "Moment type",
       value: unit?.movementType,
+      icon: <GiBrassKnuckles size={36} />,
+      color: "#a5b4fc",
     },
     {
       title: "Faction type",
       value: unit?.faction,
+      icon: <GiPickOfDestiny size={36} />,
+      color: "#d8b4fe",
     },
   ];
   const formInputData = [
@@ -174,11 +191,19 @@ const UnitRow = (props) => {
               {cardData &&
                 cardData.map((data) => (
                   <Card className="bg-dark text-white">
-                    <Card.Body>
-                      <Card.Title>{data.title}</Card.Title>
-                      <Card.Text>
-                        <div className="text-center">{data.value}</div>
-                      </Card.Text>
+                    <Card.Body className="d-flex justify-content-center align-items-center flex-column gap-3">
+                      <Card.Text>{data.title}</Card.Text>
+                      <span className="py-2" style={{ color: data.color }}>
+                        {data.icon}
+                      </span>
+                      <Card.Title>
+                        <div
+                          className="text-center"
+                          style={{ color: data.color }}
+                        >
+                          {data.value}
+                        </div>
+                      </Card.Title>
                     </Card.Body>
                   </Card>
                 ))}
