@@ -1,4 +1,6 @@
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+import { handleSaveUnit } from "../api";
+import { toast } from "react-toastify";
 
 export const handleValidation = (
   username,
@@ -33,6 +35,7 @@ export const handleValidation = (
 export const handleSetCookie = (response, setCookie, apiName, removeCookie) => {
   try {
     if (apiName === "logouts") {
+      console.log("logout called");
       removeCookie("access_token");
       removeCookie("refresh_token");
       localStorage.removeItem("tokenExpire");
@@ -63,9 +66,107 @@ export const handleSetCookie = (response, setCookie, apiName, removeCookie) => {
     console.log("Failed to set cookie", error);
   }
 };
+
 export const getSortingIcon = (columnName, sortColumn, sortDirection) => {
   if (sortColumn === columnName) {
     return sortDirection === "asc" ? <FaSortUp /> : <FaSortDown />;
   }
   return <FaSort />;
+};
+
+export const handleEpandRow = (
+  event,
+  unitId,
+  expandedRows,
+  setExpandedRows
+) => {
+  const currentExpandedRows = expandedRows;
+  const isRowExpanded = currentExpandedRows.includes(unitId);
+  let obj = {};
+  isRowExpanded ? (obj[unitId] = false) : (obj[unitId] = true);
+  const newExpandedRows = isRowExpanded
+    ? currentExpandedRows.filter((id) => id !== unitId)
+    : currentExpandedRows.concat(unitId);
+
+  setExpandedRows(newExpandedRows);
+};
+
+const validateIntegerInput = (inputValue, minValue, maxValue, divisibleBy) => {
+  const numberValue = parseInt(inputValue, 10);
+  return (
+    Number.isInteger(numberValue) &&
+    numberValue >= minValue &&
+    numberValue <= maxValue &&
+    numberValue % divisibleBy === 0
+  );
+};
+
+// Helper function to validate spawnCooldown input
+const validateSpawnCooldownInput = (inputValue) => {
+  const numberValue = parseFloat(inputValue);
+  return !isNaN(numberValue) && numberValue >= 0 && numberValue <= 100;
+};
+
+export const handleAction = (
+  e,
+  cookies,
+  unitId,
+  type,
+  setIsEditing,
+  quality,
+  health,
+  attack,
+  maxTargetCount,
+  spawnCost,
+  spawnCooldown,
+  setUnit
+) => {
+  e.stopPropagation();
+  if (type === "edit") {
+    setIsEditing(true);
+  } else if (type === "save") {
+    if (!validateIntegerInput(health, 5, 10000, 5)) {
+      toast(
+        "Health must be an integer between 5 and 10,000 and divisible by 5."
+      );
+      return;
+    }
+
+    if (!validateIntegerInput(attack, 5, 500, 5)) {
+      toast("Attack must be an integer between 5 and 500 and divisible by 5.");
+      return;
+    }
+
+    if (!validateIntegerInput(maxTargetCount, 1, 100, 1)) {
+      toast("Max Target Count must be an integer between 1 and 100.");
+      return;
+    }
+
+    if (!validateIntegerInput(spawnCost, 0, 1000, 5)) {
+      toast(
+        "Spawn Cost must be an integer between 0 and 1000 and divisible by 5."
+      );
+      return;
+    }
+
+    if (!validateSpawnCooldownInput(spawnCooldown)) {
+      toast("Spawn Cooldown must be between 0 and 100.");
+      return;
+    }
+    const data = {
+      id: unitId,
+      quality,
+      health,
+      attack,
+      maxTargetCount,
+      spawnCost,
+      spawnCooldown,
+    };
+    const res = handleSaveUnit(cookies, unitId, data);
+    res.then((res) => {
+      setUnit(res);
+      toast.success("Updated!");
+      setIsEditing(false);
+    });
+  }
 };
