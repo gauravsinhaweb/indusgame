@@ -9,9 +9,11 @@ import {
   GiThunderball,
 } from "react-icons/gi";
 import { handleAction, handleEpandRow } from "../../utils";
+import { useDispatch } from "react-redux";
 
 const UnitRow = (props) => {
-  const { _unit, cookies, getUnits } = props;
+  const dispatch = useDispatch();
+  const { _unit, units, cookies } = props;
   const [expandedRows, setExpandedRows] = useState([]);
   const [unit, setunit] = useState(_unit);
   const [quality, setQuality] = useState(unit?.quality);
@@ -23,6 +25,7 @@ const UnitRow = (props) => {
   const [spawnCooldown, setSpawnCooldown] = useState(
     unit?.spawnCooldownInSeconds
   );
+
   useEffect(() => {
     setunit(_unit);
   }, [_unit]);
@@ -123,7 +126,7 @@ const UnitRow = (props) => {
           <img
             src={unit.imageUrl}
             alt={unit.id}
-            style={{ maxWidth: "50px", maxHeight: "50px" }}
+            style={{ width: "75px", height: "75px" }}
           />
         </td>
         <td>{unit.id}</td>
@@ -152,7 +155,7 @@ const UnitRow = (props) => {
 
         {formInputData &&
           formInputData.map((data) => (
-            <td>
+            <td key={data.id}>
               {isEditing ? (
                 <Form.Group
                   onClick={(e) => e.stopPropagation()}
@@ -187,10 +190,20 @@ const UnitRow = (props) => {
                 </span>
               </h4>
             </div>
-            <div className="d-flex justify-content-around">
+            <div
+              className="d-flex justify-content-around gap-3 flex-wrap"
+              style={{ gap: "2rem" }}
+            >
               {cardData &&
-                cardData.map((data) => (
-                  <Card className="bg-dark text-white">
+                cardData.map((data, index) => (
+                  <Card
+                    key={index}
+                    className="bg-dark text-white"
+                    style={{
+                      height: "10rem",
+                      width: "15rem",
+                    }}
+                  >
                     <Card.Body className="d-flex justify-content-center align-items-center flex-column gap-3">
                       <Card.Text>{data.title}</Card.Text>
                       <span className="py-2" style={{ color: data.color }}>
@@ -232,9 +245,10 @@ const UnitRow = (props) => {
                       maxTargetCount,
                       spawnCost,
                       spawnCooldown,
-                      setunit
+                      setunit,
+                      units,
+                      dispatch
                     );
-                    getUnits();
                   }}
                 >
                   {isEditing ? "Save" : "Edit"}
@@ -254,7 +268,10 @@ const UnitRow = (props) => {
                       maxTargetCount,
                       spawnCost,
                       spawnCooldown,
-                      setunit
+                      setunit,
+                      units,
+                      dispatch,
+                      setExpandedRows
                     )
                   }
                 >

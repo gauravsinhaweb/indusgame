@@ -1,24 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import useCookies from "react-cookie/cjs/useCookies";
-import { handleGetUnits } from "../api";
+import { handleGetUnits, handleUnitUpdate } from "../api";
 import UnitRow from "../components/listing/UnitRow";
 import { getSortingIcon } from "../utils";
 import { useNavigate } from "react-router-dom";
+import { setUnits } from "../app/feature/appSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const UnitListing = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
-  const [units, setunits] = useState([]);
   const [sortColumn, setSortColumn] = useState(null);
   const [sortDirection, setSortDirection] = useState("asc");
-  const getUnits = async () => {
-    const res = await handleGetUnits(cookies, navigate);
-    setunits(res);
-  };
+  const [unitFromSocket, setUpdatedUnit] = useState([]);
+  const { units } = useSelector((state) => state.app);
+
   useEffect(() => {
+    const connectionResponse = handleUnitUpdate(cookies, setUpdatedUnit);
+    connectionResponse.then((connection) => {
+      console.log("Websocket Status:", connection?.state);
+    });
+  }, [unitFromSocket]);
+
+  useEffect(() => {
+    const getUnits = async () => {
+      const res = await handleGetUnits(cookies, navigate);
+      dispatch(setUnits(res));
+    };
     getUnits();
-  }, [getUnits]);
+  }, []);
 
   const handleSort = (columnName) => {
     if (sortColumn === columnName) {
@@ -52,7 +64,7 @@ const UnitListing = () => {
     <Table striped bordered hover responsive>
       <thead>
         <tr>
-          <th onClick={() => handleSort("imageUrl")}>Image</th>
+          <th onClick={() => handleSort("imageUrl")}>Profile</th>
           <th onClick={() => handleSort("unitId")}>
             Unit ID {getSortingIcon("unitId", sortColumn, sortDirection)}
           </th>
@@ -81,7 +93,12 @@ const UnitListing = () => {
       <tbody>
         {sortedUnits &&
           sortedUnits.map((unit) => (
-            <UnitRow _unit={unit} cookies={cookies} getUnits={getUnits} />
+            <UnitRow
+              key={unit.id}
+              _unit={unit}
+              units={units}
+              cookies={cookies}
+            />
           ))}
       </tbody>
     </Table>
