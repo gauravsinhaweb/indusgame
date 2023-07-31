@@ -18,7 +18,7 @@ const UnitListing = () => {
   };
   useEffect(() => {
     getUnits();
-  }, []);
+  }, [getUnits]);
 
   const handleSort = (columnName) => {
     if (sortColumn === columnName) {
