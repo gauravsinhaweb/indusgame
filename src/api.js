@@ -149,3 +149,45 @@ export const handleUnitUpdate = async (cookies, setUpdatedUnit) => {
     console.error("Error while creating connection:", error);
   }
 };
+
+export const handleGetPacks = async (cookies, navigate) => {
+  try {
+    const url = API.BASE + API.PACKS;
+    const headers = {
+      Authorization: `Bearer ${cookies?.access_token}`,
+    };
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
+    if (response.status === 401) {
+      toast.error("Token expired!");
+      navigate("/");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const handleGetSales = async (cookies, navigate) => {
+  try {
+    const url = API.BASE + API.SALES;
+    const headers = {
+      Authorization: `Bearer ${cookies?.access_token}`,
+    };
+    const response = await fetch(url, {
+      method: "GET",
+      headers,
+    });
+    if (response.status === 401) {
+      toast.error("Token expired!");
+      navigate("/");
+    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};

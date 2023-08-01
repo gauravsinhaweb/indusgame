@@ -26,6 +26,13 @@ const Navbar = () => {
       >
         <ul className="navbar-nav">
           <li
+            onClick={() => navigate("/cards")}
+            className="nav-item nav-link"
+            style={{ cursor: "pointer" }}
+          >
+            Cards
+          </li>
+          <li
             onClick={() => navigate("/units")}
             className="nav-item nav-link cursor-pointer"
             style={{ cursor: "pointer" }}

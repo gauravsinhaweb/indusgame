@@ -4,6 +4,7 @@ import { Login } from "../../pages/Login";
 import UnitListing from "../../pages/UnitListing";
 import useCookies from "react-cookie/cjs/useCookies";
 import { PrivateRoute } from "./PrivateRoute";
+import Cards from "../../pages/Cards";
 
 const RoutePage = () => {
   const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
@@ -19,6 +20,7 @@ const RoutePage = () => {
         }
       >
         <Route path="/units" element={<UnitListing />}></Route>
+        <Route path="/cards" element={<Cards />}></Route>
       </Route>
     </Routes>
   );
