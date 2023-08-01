@@ -3,6 +3,7 @@ import useCookies from "react-cookie/cjs/useCookies";
 import { useNavigate } from "react-router-dom";
 import { handleLogin } from "../api";
 import { handleValidation } from "../utils";
+import { toast } from "react-toastify";
 
 export const Login = () => {
   const [password, setPassword] = useState("");
@@ -21,8 +22,11 @@ export const Login = () => {
     handleValidation(username, password, setusernameError, setpasswordError);
     if (handleValidation) {
       const res = await handleLogin(username, password, setCookie);
-      if (res?.auth?.accessToken?.length > 0) {
+      if (res?.data?.auth?.accessToken?.length > 0) {
         navigate("/units");
+      }
+      if (res?.response?.status === 400) {
+        toast.warning("Invalid Credentials");
       }
     }
   };

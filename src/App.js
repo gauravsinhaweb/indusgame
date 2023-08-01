@@ -1,16 +1,14 @@
+import { useEffect } from "react";
+import useCookies from "react-cookie/cjs/useCookies";
 import { Flip, ToastContainer, toast } from "react-toastify";
 import "./App.css";
+import { handleRefreshToken } from "./api";
 import Navbar from "./components/Navbar";
 import RoutePage from "./components/routes/RoutePage";
 import { constants } from "./constants";
-import useCookies from "react-cookie/cjs/useCookies";
-import { handleRefreshToken } from "./api";
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 
 function App() {
   const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const expirationTime = localStorage.getItem("tokenExpire");
@@ -24,7 +22,6 @@ function App() {
       } catch (error) {
         console.error("Error while refreshing access token:", error);
         toast.error("Error while refreshing access token");
-        navigate("/login");
       }
     }, timeout);
     return () => {
