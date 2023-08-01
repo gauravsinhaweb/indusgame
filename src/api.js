@@ -1,7 +1,6 @@
 import { toast } from "react-toastify";
 import { API } from "./config";
 import { handleSetCookie } from "./utils";
-import axios from "axios";
 import { HttpTransportType, HubConnectionBuilder } from "@microsoft/signalr";
 
 export const handleLogin = async (username, password, setCookie) => {
@@ -12,23 +11,23 @@ export const handleLogin = async (username, password, setCookie) => {
       password: password,
     };
 
-    const loginResponse = await axios.post(loginAPI, loginData, {
+    const response = await fetch(loginAPI, {
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
+      body: JSON.stringify(loginData),
     });
-    axios.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${loginResponse.data.auth.accessToken}`;
 
-    const loginResponseData = loginResponse.data;
-    if (loginResponseData?.auth?.accessToken.length > 0) {
-      handleSetCookie(loginResponseData, setCookie, "login", null);
+    const data = await response.json();
+    if (data?.auth?.accessToken.length > 0) {
+      handleSetCookie(data, setCookie, "login", null);
       toast.success("Login Success!");
     }
 
-    return loginResponseData;
+    return { response, data };
   } catch (error) {
+    toast.warning("Please enter valid credentials!");
     console.log(error);
   }
 };
