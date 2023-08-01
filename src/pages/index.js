@@ -28,7 +28,7 @@ const Hero = () => {
         </Card>
         <Card
           style={{ maxWidth: "25rem", cursor: "pointer" }}
-          onClick={() => navigate("/units")}
+          onClick={() => navigate("/cards")}
           className="bg-dark p-1 text-white w-sm-25 hero-card"
         >
           <Card.Body>
