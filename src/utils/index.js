@@ -1,6 +1,7 @@
 import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 import { handleDeleteUnit, handleSaveUnit } from "../api";
 import { toast } from "react-toastify";
+import { setUnits } from "../app/feature/appSlice";
 
 export const handleValidation = (
   username,
@@ -35,7 +36,6 @@ export const handleValidation = (
 export const handleSetCookie = (response, setCookie, apiName, removeCookie) => {
   try {
     if (apiName === "logouts") {
-      console.log("logout called");
       removeCookie("access_token");
       removeCookie("refresh_token");
       localStorage.removeItem("tokenExpire");
@@ -119,7 +119,10 @@ export const handleAction = (
   maxTargetCount,
   spawnCost,
   spawnCooldown,
-  setUnit
+  setUnit,
+  units,
+  dispatch,
+  setExpandedRows
 ) => {
   e.stopPropagation();
   if (type === "edit") {
@@ -165,6 +168,9 @@ export const handleAction = (
     const res = handleSaveUnit(cookies, unitId, data);
     res.then((res) => {
       setUnit(res);
+      dispatch(
+        setUnits(units.map((unit) => (unit.id === unitId ? res : unit)))
+      );
       toast.success("Updated!");
       setIsEditing(false);
     });
@@ -181,6 +187,9 @@ export const handleAction = (
     const res = handleDeleteUnit(cookies, unitId, data);
     res.then((res) => {
       if (res.status === 204) {
+        setExpandedRows([]);
+        const newUnits = units.filter((unit) => unit.id !== unitId);
+        dispatch(setUnits(newUnits));
         toast.success("Deleted!");
       }
     });

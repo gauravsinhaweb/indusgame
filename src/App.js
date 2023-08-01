@@ -31,6 +31,7 @@ function App() {
       clearTimeout(refreshTimer);
     };
   }, [cookies]);
+
   return (
     <div className="main">
       <Navbar />

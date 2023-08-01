@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import { API } from "./config";
 import { handleSetCookie } from "./utils";
 import axios from "axios";
+import { HttpTransportType, HubConnectionBuilder } from "@microsoft/signalr";
 
 export const handleLogin = async (username, password, setCookie) => {
   try {
@@ -127,5 +128,25 @@ export const handleDeleteUnit = async (cookies, id, body) => {
     return response;
   } catch (error) {
     console.log(error);
+  }
+};
+export const handleUnitUpdate = async (cookies, setUpdatedUnit) => {
+  try {
+    const accessToken = cookies?.access_token;
+    const connection = new HubConnectionBuilder()
+      .withUrl("https://test.indusgame.com/hubs/unit", {
+        skipNegotiation: true,
+        transport: HttpTransportType.WebSockets,
+        accessTokenFactory: () => accessToken, // Provide the access token
+      })
+      .build();
+    connection.on("UnitUpdated", (unit) => {
+      // Update the local state with the updated unit data
+      setUpdatedUnit(unit);
+    });
+    await connection.start();
+    return connection;
+  } catch (error) {
+    console.error("Error while creating connection:", error);
   }
 };
