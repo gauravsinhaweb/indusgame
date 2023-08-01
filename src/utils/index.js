@@ -195,3 +195,86 @@ export const handleAction = (
     });
   }
 };
+
+export const handleValidateDate = (startDate, endDate) => {
+  let dateValid = true;
+  if (!startDate || !endDate) toast.warning("Dates cannot be empty!");
+  if (startDate && endDate) {
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    if (
+      startDateObj >= new Date("2023-01-01") &&
+      endDateObj <= new Date("2023-03-31")
+    ) {
+      dateValid = true;
+      if (startDateObj > endDateObj) {
+        toast.warning("Start Date should be less than End Date");
+        dateValid = false;
+      }
+    } else {
+      toast.warning("Date should be between 2023-01-01 and 2023-03-31");
+    }
+  }
+  return dateValid;
+};
+
+export const calculateInsights = (startDate, endDate, sales,packs) => {
+  const filteredSales = sales.filter((sale) => {
+    const saleDate = new Date(sale.date);
+    return saleDate >= startDate && saleDate <= endDate;
+  });
+
+  let mostSoldPackUSD = null;
+  let mostSoldPackQuantity = 0;
+  let leastSoldPackUSD = null;
+  let leastSoldPackQuantity = Infinity;
+  let totalSalesInUSD = 0;
+
+  filteredSales.forEach((sale) => {
+    sale.packs.forEach((pack) => {
+      const packSaleInUSD = getSaleInUSD(pack.id, pack.quantity,packs);
+      totalSalesInUSD += packSaleInUSD;
+
+      if (packSaleInUSD > mostSoldPackUSD) {
+        mostSoldPackUSD = packSaleInUSD;
+        mostSoldPackQuantity = pack.quantity;
+      }
+
+      if (packSaleInUSD < leastSoldPackQuantity) {
+        leastSoldPackUSD = packSaleInUSD;
+        leastSoldPackQuantity = pack.quantity;
+      }
+    });
+  });
+
+  return {
+    mostSoldPackUSD,
+    mostSoldPackQuantity,
+    leastSoldPackUSD,
+    leastSoldPackQuantity,
+    totalSalesInUSD,
+  };
+};
+export const getSaleInUSD = (packId, quantity, packs) => {
+  const pack = packs.find((pack) => pack.id === packId);
+  if (pack) {
+    const priceInUSD = getDynamicPriceInUSD(pack.productId);
+    return priceInUSD * quantity;
+  }
+  return 0;
+};
+
+export const getDynamicPriceInUSD = (productId) => {
+  const regex = /^offer_(\d+)$/;
+
+  const match = productId.match(regex);
+
+  if (match && match[1]) {
+    const dynamicValue = Number(match[1]) - 0.01;
+
+    if (!isNaN(dynamicValue) && dynamicValue > 0) {
+      return dynamicValue.toFixed(2);
+    }
+  }
+  return 0;
+};

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 import useCookies from "react-cookie/cjs/useCookies";
 import { handleGetUnits, handleUnitUpdate } from "../api";
-import UnitRow from "../components/listing/UnitRow";
+import UnitRow from "../components/unit/UnitRow";
 import { getSortingIcon } from "../utils";
 import { useNavigate } from "react-router-dom";
 import { setUnits } from "../app/feature/appSlice";
