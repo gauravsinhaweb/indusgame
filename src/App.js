@@ -6,6 +6,7 @@ import { handleRefreshToken } from "./api";
 import Navbar from "./components/Navbar";
 import RoutePage from "./components/routes/RoutePage";
 import { constants } from "./constants";
+import NavBar from "./components/Navbar";
 
 function App() {
   const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
@@ -31,7 +32,7 @@ function App() {
 
   return (
     <div className="main">
-      <Navbar />
+      <NavBar />
       <RoutePage />
       <ToastContainer
         theme="dark"
