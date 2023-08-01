@@ -10,7 +10,7 @@
 ### **[Click here to live preview](https://indusgame.vercel.app/login)**
 
 ## Features
-- Mobile/ Tablet/ Desktop responsive
+- **Screens friendly** Mobile/ Tablet/ Desktop responsive
 - **User Authentication**: Users can log in with valid credentials.
 - **Access Control**: Private access requires login or access_token.
 - **Tabular Unit View**: Units are displayed in a tabular format for better readability.
@@ -22,13 +22,8 @@
 - **Deletion**: Users can delete specific units.
 
 **Packs and Sales**
-- Read packs and sales
-- most and least sold pack from the USD perspective in a given time period
-- most and least sold pack from the quantity perspective in a given time period
-- sale distribution of the given pack in a given time period
-- anything else which you think makes the sale information insightful
-
-
+- **Read**: packs and sales
+- **Functionality**: most and least sold pack from the USD perspective, quantity in a given time period
 
 - [x] Part I: Auth Functionality
     -  A page with a login form that accepts `username` and `password` pair will be required.
