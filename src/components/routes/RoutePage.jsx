@@ -5,13 +5,13 @@ import UnitListing from "../../pages/UnitListing";
 import useCookies from "react-cookie/cjs/useCookies";
 import { PrivateRoute } from "./PrivateRoute";
 import Cards from "../../pages/Cards";
-import Hero from "../../pages";
 
 const RoutePage = () => {
   const [cookies, setCookie] = useCookies(["access_token", "refresh_token"]);
   return (
     <Routes>
-      {" "}
+      <Route path="/" element={<Navigate to="/login" />} />
+      <Route exact path="/login" element={<Login />}></Route>
       <Route
         exact
         path="/"
@@ -19,11 +19,9 @@ const RoutePage = () => {
           <PrivateRoute isTokenExpired={!Boolean(cookies?.access_token)} />
         }
       >
-        <Route path="/" element={<Hero />} />
         <Route path="/units" element={<UnitListing />}></Route>
         <Route path="/cards" element={<Cards />}></Route>
       </Route>
-      <Route exact path="/login" element={<Login />}></Route>
     </Routes>
   );
 };

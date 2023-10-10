@@ -68,7 +68,7 @@ const Cards = () => {
         )}
       </div>
 
-      <h2 className="text-center pt-4">Packs {`(${packs.length})`}</h2>
+      <h2 className="text-center pt-4">Packs</h2>
 
       <div
         className="d-flex m-4 justify-content-around flex-wrap align-items-center h-100"
@@ -79,7 +79,7 @@ const Cards = () => {
             return <PackListing key={pack.id} pack={pack} />;
           })}
       </div>
-      <h2 className="text-center pt-4">Sales {`(${sales.length})`}</h2>
+      <h2 className="text-center pt-4">Sales</h2>
 
       <div
         className="d-flex m-4 justify-content-around flex-wrap align-items-start h-100"
