@@ -2,54 +2,55 @@ import React from "react";
 import useCookies from "react-cookie/cjs/useCookies";
 import { handleLogout } from "../api";
 import { useNavigate } from "react-router-dom";
-
-const Navbar = () => {
+import { Navbar, Container, Nav, NavDropdown } from "react-bootstrap";
+const NavBar = () => {
   const [cookies, setCookie, removeCookie] = useCookies([
     "access_token",
     "refresh_token",
   ]);
   const navigate = useNavigate();
   return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-dark">
-      <div className="container-fluid">
-        <a
+    <Navbar fixed="top" expand="lg  " className="sticky">
+      <Container className="nav-container">
+        <Navbar.Brand
           onClick={() => navigate("/")}
-          className="navbar-brand"
           style={{ cursor: "pointer" }}
         >
-          Indusgame
-        </a>
-      </div>
-      <div
-        className="collapse navbar-collapse justify-content-end"
-        id="navbarNav"
-      >
-        <ul className="navbar-nav">
-          <li
-            onClick={() => navigate("/cards")}
-            className="nav-item nav-link"
-            style={{ cursor: "pointer" }}
+          <span>Indus Game</span>
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="responsive-navbar-nav">
+          <span></span>
+          <span></span>
+          <span></span>
+        </Navbar.Toggle>
+        <Navbar.Collapse id="responsive-navbar-nav">
+          <Nav
+            className="ms-auto d-flex  w-100 justify-content-end"
+            defaultActiveKey="#home"
           >
-            Cards
-          </li>
-          <li
-            onClick={() => navigate("/units")}
-            className="nav-item nav-link cursor-pointer"
-            style={{ cursor: "pointer" }}
-          >
-            Units
-          </li>
-          <li
-            onClick={() => handleLogout(cookies, removeCookie, navigate)}
-            className="nav-item nav-link cursor-pointer"
-            style={{ cursor: "pointer", color: "#ff0000" }}
-          >
-            Logout
-          </li>
-        </ul>
-      </div>
-    </nav>
+            <Nav.Item>
+              <Nav.Link
+                className="text-white"
+                onClick={() => navigate("/")}
+                style={{ cursor: "pointer" }}
+              >
+                Home
+              </Nav.Link>
+            </Nav.Item>
+            <Nav.Item>
+              <Nav.Link
+                className="text-warning"
+                onClick={() => handleLogout(cookies, removeCookie, navigate)}
+                style={{ cursor: "pointer" }}
+              >
+                Logout
+              </Nav.Link>
+            </Nav.Item>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
 
-export default Navbar;
+export default NavBar;
