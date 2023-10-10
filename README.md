@@ -52,7 +52,7 @@
     - The backend exposes a WebSocket connection at /hubs/unit using `SignalR library`. Anytime a unit data is updated, all clients connected to the /hubs/unit endpoint using the WebSocket protocol will get a "UnitUpdated" event with the unit data in it which just got updated.
     
 ## Tech stack
-- React JS - framework (JavaScript)
+- React JS / JavaScript
 - Redux Toolkit/ React Redux - State management
 - React toastify - Notifications handling
 - Microsoft signalIR - websocket
