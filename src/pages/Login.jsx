@@ -23,7 +23,7 @@ export const Login = () => {
     if (handleValidation) {
       const res = await handleLogin(username, password, setCookie);
       if (res?.data?.auth?.accessToken?.length > 0) {
-        navigate("/");
+        navigate("/units");
       }
       if (res?.response?.status === 400) {
         toast.warning("Invalid Credentials");
